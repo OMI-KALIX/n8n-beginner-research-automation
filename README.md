@@ -6,6 +6,10 @@ This project focuses on **learning, experimentation, and practical automation** 
 
 ---
 
+### 🖼️ Automation Workflow
+![Workflow Screenshot](screenshots/n8n-beginner-research-automation.png)
+![mailed Screenshot](screenshots/mailed_research.png)
+
 ## 🔧 What This Automation Does
 
 This workflow automates the full research lifecycle:
