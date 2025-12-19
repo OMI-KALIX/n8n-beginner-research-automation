@@ -1,0 +1,528 @@
+{
+  "name": "RESEARCH_TOOL_FOR_begineer",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -944,
+        -496
+      ],
+      "id": "26c932c8-7c1e-4156-8d7b-82312b49d619",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "appkKaBy1KjRWULsz",
+          "mode": "list",
+          "cachedResultName": "Untitled Base",
+          "cachedResultUrl": "https://airtable.com/appkKaBy1KjRWULsz"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblnQaDcUNNp4c7TO",
+          "mode": "list",
+          "cachedResultName": "n8n_t",
+          "cachedResultUrl": "https://airtable.com/appkKaBy1KjRWULsz/tblnQaDcUNNp4c7TO"
+        },
+        "id": "={{ $json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -592,
+        -480
+      ],
+      "id": "8e463bc2-8cff-4b3a-829a-c3e85bb39d56",
+      "name": "Get a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "9gBTHW8JpIcMddmx",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appkKaBy1KjRWULsz",
+          "mode": "list",
+          "cachedResultName": "Untitled Base",
+          "cachedResultUrl": "https://airtable.com/appkKaBy1KjRWULsz"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblnQaDcUNNp4c7TO",
+          "mode": "list",
+          "cachedResultName": "n8n_t",
+          "cachedResultUrl": "https://airtable.com/appkKaBy1KjRWULsz/tblnQaDcUNNp4c7TO"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -752,
+        -464
+      ],
+      "id": "7d53ce29-9248-4b9f-8074-1417aaec6bde",
+      "name": "Search records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "9gBTHW8JpIcMddmx",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"query\": \"{{ $json.Topic }}\",\n  \"auto_parameters\": false,\n  \"topic\": \"general\",\n  \"search_depth\": \"basic\",\n  \"chunks_per_source\": 3,\n  \"max_results\": 1,\n  \"time_range\": null,\n  \"start_date\": \"2025-02-09\",\n  \"end_date\": \"2025-12-29\",\n  \"include_answer\": false,\n  \"include_raw_content\": false,\n  \"include_images\": false,\n  \"include_image_descriptions\": false,\n  \"include_favicon\": false,\n  \"include_domains\": [],\n  \"exclude_domains\": [],\n  \"country\": null,\n  \"include_usage\": false\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -416,
+        -608
+      ],
+      "id": "62fa9f5a-15e0-423f-b630-5a92ae948e36",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=article 1:{{ $json.results[0].content }}\narticle 2:{{ $json.results[1].content }}\narticle 3:{{ $json.results[2].content }}\n\n",
+        "options": {
+          "systemMessage": "=You are a research assistant writing in a formal academic style.\n\nSTRICT RULES:\n1. Use ONLY the information provided in the Sources section.\n2. Do NOT add external knowledge or assumptions.\n3. If information is insufficient, clearly state the limitation.\n4. Maintain a neutral, objective, research-oriented tone.\n5. Avoid marketing language, opinions, or casual explanations.\n6. Do not exaggerate findings.\n\nTASK:\nTransform the provided sources into a structured research-style document.\n\nREQUIRED STRUCTURE:\n1. Title\n2. Abstract (150–200 words, objective summary)\n3. Introduction (background strictly from sources)\n4. Methodology (how information was gathered, inferred from sources)\n5. Key Findings (thematic, evidence-based)\n6. Discussion (implications and limitations based on sources)\n7. Conclusion (concise, factual)\n8. References (numbered, based on provided URLs)\n\nSTYLE GUIDELINES:\n- Use third-person perspective.\n- Use precise technical language.\n- Prefer passive voice where appropriate.\n- Avoid personal pronouns (I, we, you).\n- Do not speculate beyond the sources.\n\nSOURCES:\nYou are a research assistant writing in a formal academic style.\n\nSTRICT RULES:\n1. Use ONLY the information provided in the Sources section.\n2. Do NOT add external knowledge or assumptions.\n3. If information is insufficient, clearly state the limitation.\n4. Maintain a neutral, objective, research-oriented tone.\n5. Avoid marketing language, opinions, or casual explanations.\n6. Do not exaggerate findings.\n\nTASK:\nTransform the provided sources into a structured research-style document.\n\nREQUIRED STRUCTURE:\n1. Title\n2. Abstract (150–200 words, objective summary)\n3. Introduction (background strictly from sources)\n4. Methodology (how information was gathered, inferred from sources)\n5. Key Findings (thematic, evidence-based)\n6. Discussion (implications and limitations based on sources)\n7. Conclusion (concise, factual)\n8. References (numbered, based on provided URLs)\n\nSTYLE GUIDELINES:\n- Use third-person perspective.\n- Use precise technical language.\n- Prefer passive voice where appropriate.\n- Avoid personal pronouns (I, we, you).\n- Do not speculate beyond the sources.\n\nSOURCES:\n{{$json.results[0].url}}\n\nOUTPUT:\nProduce a complete research-style document following the required structure.\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -224,
+        -496
+      ],
+      "id": "c1d85420-ef35-4f58-8320-c4c2c8fbb8b8",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "gemma3:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        -304
+      ],
+      "id": "90e365ac-3cd6-4e4c-aa18-236cf6f7c257",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "XzeXVzZagz4Tv0n1",
+          "name": "Ollama account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appkKaBy1KjRWULsz",
+          "mode": "list",
+          "cachedResultName": "Untitled Base",
+          "cachedResultUrl": "https://airtable.com/appkKaBy1KjRWULsz"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblnQaDcUNNp4c7TO",
+          "mode": "list",
+          "cachedResultName": "n8n_t",
+          "cachedResultUrl": "https://airtable.com/appkKaBy1KjRWULsz/tblnQaDcUNNp4c7TO"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Search records').item.json.id }}",
+            "Topic": "={{ $('Search records').item.json.Topic }}",
+            "Status": "completed",
+            "Research Content": "={{ $json.output }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "pending",
+                  "value": "pending"
+                },
+                {
+                  "name": "completed",
+                  "value": "completed"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Research Content",
+              "displayName": "Research Content",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        80,
+        -320
+      ],
+      "id": "731b2b5a-a679-47d9-9171-38247923b587",
+      "name": "Update record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "9gBTHW8JpIcMddmx",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "r230345@famt.ac.in",
+        "subject": "Reseach paper content",
+        "message": "={{ $json.html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        -560
+      ],
+      "id": "dc098e66-52a3-4990-b3b8-85cc4a46c573",
+      "name": "Send a message",
+      "webhookId": "34d182b4-9247-4b7a-af91-dc652ff2310b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "hPuH5quRckLV1ChC",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "markdownToHtml",
+        "markdown": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        80,
+        -560
+      ],
+      "id": "442c301b-3cfc-40d3-9d81-24be1e0c0b94",
+      "name": "Markdown"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0ca8a627-f3e0-4c0e-bed8-a0a8051b6f7a",
+              "name": "html",
+              "value": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Research Article</title>\n  <style>\n    body {\n      font-family: \"Times New Roman\", serif;\n      line-height: 1.6;\n      font-size: 15px;\n      color: #000;\n      margin: 40px;\n    }\n    h2 {\n      text-align: center;\n      margin-bottom: 30px;\n    }\n    h3 {\n      margin-top: 25px;\n    }\n    p {\n      text-align: justify;\n    }\n    ol {\n      margin-left: 20px;\n    }\n  </style>\n</head>\n<body>\n\n {{ $json.data }}\n\n</body>\n</html>",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        -560
+      ],
+      "id": "5ed4b6f9-a0fb-4f9c-aca7-9a34be93fcaa",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        304,
+        -320
+      ],
+      "id": "ce1399d6-2324-46d7-8054-3215b90f5108",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        576,
+        -416
+      ],
+      "id": "0334d76a-1800-417f-b63a-219d0f89283e",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "content": "# BEGINEER RESEARCH TOOL",
+        "height": 80,
+        "width": 544,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -304,
+        -896
+      ],
+      "typeVersion": 1,
+      "id": "1d1c754c-0d5c-4e3a-9310-80290ba50956",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## SEARCH AND GET FIRST RECORED FROM AIRTABLE SHEET FROM BASE",
+        "height": 112,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -752,
+        -624
+      ],
+      "typeVersion": 1,
+      "id": "a6316219-ad1d-4b8f-8d93-5c23f8e0a00e",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## TOPIC SEARCHING USING TAVILY api",
+        "height": 80,
+        "width": 246,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -464,
+        -704
+      ],
+      "typeVersion": 1,
+      "id": "c8150614-88ee-43ed-971b-e5383c7ba8f4",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## RECORD UPDATON & MAILING THAT RESEARCHED CONTENT WITH FORMATED MANNER",
+        "height": 80,
+        "width": 432,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        96,
+        -672
+      ],
+      "typeVersion": 1,
+      "id": "cfa4fbf7-b240-4980-921c-85effa084bc0",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "Get a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a record": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Update record",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update record": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f638e553-2d99-4c34-913b-728bc5661cca",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
+  },
+  "id": "NO1SWZLr93mJGsr2",
+  "tags": []
+}
